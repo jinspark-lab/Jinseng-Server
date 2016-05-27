@@ -6,6 +6,5 @@ It always syncs with "Jinseng-Client"
 You can use two sources for free.
 
 ##Dependency
-JUnit
-Log4J
+JUnit, Log4J
 
