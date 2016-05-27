@@ -9,49 +9,48 @@ import java.util.concurrent.Executors;
 public class TcpServer {
 	
 	private ServerSocket server;
-	private final int port = 12345;
+	private int port = 12345;
 	ExecutorService threadPool;
-	private final int threadMax = 12;
+	private int threadMax = 12;
+	private int timeout = 60000;
 	private ServiceLogic serviceLogic;				//Service Logic of your application.
 	private boolean serviceLoop = true;
 	
 	private ConnectionManager manager = ConnectionManager.GetInstance();
 
 	public TcpServer(ServiceLogic service){
+		InitConfiguration(service);
+	}
+	public TcpServer(ServiceLogic service, int port){
+		this.port = port;
+		InitConfiguration(service);
+	}
+	public TcpServer(ServiceLogic service, int port, int threadMax){
+		this.port = port;
+		this.threadMax = threadMax;
+		InitConfiguration(service);
+	}
+	public TcpServer(ServiceLogic service, int port, int threadMax, boolean loop){
+		this.port = port;
+		this.threadMax = threadMax;
+		this.serviceLoop = loop;
+		InitConfiguration(service);
+	}
+	public TcpServer(ServiceLogic service, int port, int threadMax, boolean loop, int serverTimeout){
+		this.port = port;
+		this.threadMax = threadMax;
+		this.serviceLoop = loop;
+		this.timeout = serverTimeout;
+		InitConfiguration(service);
+	}
+	
+	
+	private void InitConfiguration(ServiceLogic service){
 		try {
-			
 			server = new ServerSocket(port);
 			threadPool = Executors.newFixedThreadPool(threadMax);			//Allocate Threadpool by max size.
 			serviceLogic = service;
-			server.setSoTimeout(60000);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	public TcpServer(ServiceLogic service, boolean loop){
-		try {
-			
-			server = new ServerSocket(port);
-			threadPool = Executors.newFixedThreadPool(threadMax);			//Allocate Threadpool by max size.
-			serviceLogic = service;
-			serviceLoop = loop;
-			server.setSoTimeout(60000);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	public TcpServer(ServiceLogic service, boolean loop, int numberOfThread){
-		try {
-			server = new ServerSocket(port);
-			threadPool = Executors.newFixedThreadPool(numberOfThread);			//Allocate Threadpool by max size.
-			serviceLogic = service;
-			serviceLoop = loop;
-			server.setSoTimeout(60000);
-			
+			server.setSoTimeout(timeout);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
