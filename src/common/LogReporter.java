@@ -1,5 +1,6 @@
 package common;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,8 @@ public class LogReporter {
 	private static final Logger LOGGER = Logger.getLogger(LogReporter.class.getName());
 	private static Handler consoleHandle = new ConsoleHandler();									//Basically LogReporter uses consoleHandler.
 	private static Map<String, FileHandler> fileHandles = new HashMap<String, FileHandler>();	//Store file mapper in memory.
+	
+	//Filter not yet be implemented!!!
 	
 	public LogReporter(){
 		
