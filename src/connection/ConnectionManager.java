@@ -1,10 +1,12 @@
-package core.tcp;
+package connection;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import core.tcp.IServiceLogic;
 
 public class ConnectionManager {
 	/***
@@ -41,7 +43,7 @@ public class ConnectionManager {
 		connectionMap.put(uuid, newCon);
 	}
 
-	public ConnectionUnit CreateNewUnit(Socket endPoint, ServiceLogic businessLogic){
+	public ConnectionUnit CreateNewUnit(Socket endPoint, IServiceLogic businessLogic){
 		
 		String newConId = GenerateConnectionId();
 		ConnectionUnit newOne = new ConnectionUnit(newConId, endPoint, businessLogic);
@@ -50,10 +52,18 @@ public class ConnectionManager {
 		return newOne;
 	}
 	
-	public ConnectionUnit CreateNewUnit(Socket endPoint, ServiceLogic businessLogic, boolean loop){
+	public ConnectionUnit CreateNewUnit(Socket endPoint, IServiceLogic businessLogic, boolean loop){
 		
 		String newConId = GenerateConnectionId();
 		ConnectionUnit newOne = new ConnectionUnit(newConId, endPoint, businessLogic, loop);
+		RegisterConId(newConId, newOne);
+		
+		return newOne;
+	}
+	public ConnectionUnit CreateNewUnit(Socket endPoint, IServiceLogic businessLogic, boolean loop, int term){
+		
+		String newConId = GenerateConnectionId();
+		ConnectionUnit newOne = new ConnectionUnit(newConId, endPoint, businessLogic, loop, term);
 		RegisterConId(newConId, newOne);
 		
 		return newOne;

@@ -55,7 +55,7 @@ public class HttpProtocolParser {
 		
 		encodedRequest = new HttpRequest(method, uri, version);
 
-		for(int i=1; i<requestRows.length-1; i++){
+		for(int i=1; i<requestRows.length-2; i++){
 			String row = requestRows[i];
 			String[] tuple = row.split(":");
 			encodedRequest.ConfigHeaderProperty(tuple[0], tuple[1]);

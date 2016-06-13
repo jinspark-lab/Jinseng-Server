@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import core.tcp.ConnectionManager;
-import core.tcp.ConnectionUnit;
+import connection.ConnectionManager;
+import connection.ConnectionUnit;
 
 public class TestTcp {
 
@@ -36,4 +36,5 @@ public class TestTcp {
 		assertEquals(true, unit.getSocket().isClosed());
 		
 	}
+	
 }

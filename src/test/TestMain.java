@@ -2,8 +2,9 @@
 package test;
 
 import org.junit.Test;
-import core.tcp.ConnectionUnit;
-import core.tcp.ConnectionManager;
+
+import connection.ConnectionManager;
+import connection.ConnectionUnit;
 
 import static org.junit.Assert.*;
 

@@ -16,7 +16,7 @@ public class HttpServer {
 	
 	private ServerSocket server;
 	private final int port = 8080;
-	ExecutorService threadPool;
+	private ExecutorService threadPool;
 	private int threadMax = 12;
 	private int timeout = 60000;
 	private IWebServiceLogic serviceLogic;				//Service Logic of your application.
@@ -39,19 +39,22 @@ public class HttpServer {
 		this.threadMax = threadMax;
 		InitConfiguration(logic);
 	}
-	
+
 	private void InitConfiguration(IWebServiceLogic service){
 		try {
 			server = new ServerSocket(port);
 			threadPool = Executors.newFixedThreadPool(threadMax);			//Allocate Threadpool by max size.
 			serviceLogic = service;
-			server.setSoTimeout(timeout);
+
+			//Make server socket infinitely.
+			server.setSoTimeout(0);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void RunServer() throws IOException{
 		System.out.println("Waiting for client message...");
 		
@@ -62,7 +65,10 @@ public class HttpServer {
 					
 					//Accept connection and do the work in thread.
 					Socket endpoint = server.accept();
+					//Make client socket has timeout.
+					endpoint.setSoTimeout(this.timeout);
 					System.out.println("Accepted");
+					
 					//Passing parameters socket end point and service logic.
 	//				ConnectionUnit handler = manager.CreateNewUnit(endpoint, serviceLogic, false);
 					WebConnectionUnit handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, serviceLogic);

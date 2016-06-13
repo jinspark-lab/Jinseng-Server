@@ -1,32 +1,40 @@
-package core.tcp;
+package connection;
 
 import java.io.IOException;
 import java.net.Socket;
 
-public class ConnectionUnit implements Runnable{
+import core.tcp.IServiceLogic;
 
+public class ConnectionUnit implements Runnable{
+	/***
+	 * 	Basic class of socket connection.
+	 * It implements basic connection between two endpoints regardless of its protocol.
+	 * 
+	 */
+	
+	
 	//connectionId will be given.
 	private String connectionId = null;
 	
 	private Socket socket;
-	private ServiceLogic logic;
+	private IServiceLogic logic;
 	private boolean serviceLoop = false;				//Initially handle communication once.
 	private int term = 1000;								//term to handle connection.
 	
-	public ConnectionUnit(String id, Socket endpoint, ServiceLogic businessLogic){
+	public ConnectionUnit(String id, Socket endpoint, IServiceLogic businessLogic){
 		connectionId = id;
 		socket = endpoint;
 		logic = businessLogic;
 		System.out.println("New connection generate : " + connectionId);
 	}
-	public ConnectionUnit(String id, Socket endpoint, ServiceLogic businessLogic, boolean loop){
+	public ConnectionUnit(String id, Socket endpoint, IServiceLogic businessLogic, boolean loop){
 		connectionId = id;
 		socket = endpoint;
 		logic = businessLogic;
 		serviceLoop = loop;
 		System.out.println("New connection generate : " + connectionId);
 	}
-	public ConnectionUnit(String id, Socket endpoint, ServiceLogic businessLogic, boolean loop, int term){
+	public ConnectionUnit(String id, Socket endpoint, IServiceLogic businessLogic, boolean loop, int term){
 		connectionId = id;
 		socket = endpoint;
 		logic = businessLogic;
@@ -42,6 +50,12 @@ public class ConnectionUnit implements Runnable{
 		return socket;
 	}
 	
+	/***
+	 * 	Run logic. It shows network I/O routine.
+	 * tcp > connection based handshake.
+	 * udp > connectless handshake.
+	 * http > stateless request and response.
+	 */
 	public void run(){
 		try{
 			

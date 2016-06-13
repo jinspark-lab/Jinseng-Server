@@ -1,4 +1,4 @@
-package sample;
+package sample.tcp;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import core.tcp.*;
 
-public class PrintService implements ServiceLogic{
+public class PrintService implements IServiceLogic{
 
 	public Object ReceiveRequest(String connectionId, Socket socket){
 		try {

@@ -1,4 +1,4 @@
-package sample;
+package sample.tcp;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -7,9 +7,11 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.Scanner;
 
+import connection.ConnectionManager;
+import connection.ConnectionUnit;
 import core.tcp.*;
 
-public class ChatRoomService implements ServiceLogic{
+public class ChatRoomService implements IServiceLogic{
 
 	private String endId;
 	private Socket endPoint;

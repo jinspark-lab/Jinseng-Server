@@ -1,4 +1,4 @@
-package sample;
+package sample.tcp;
 
 import core.tcp.*;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-public class FileTransferService implements ServiceLogic {
+public class FileTransferService implements IServiceLogic {
 
 	private Socket endSocket = null;
 	
