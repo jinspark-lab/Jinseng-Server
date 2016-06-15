@@ -30,16 +30,14 @@ public class WebConnectionUnit implements Runnable{
 		if(response == null)
 			return ;
 		
-		//Decode the response to raw string.
-		String responsed = httpParser.DecodeResponse(response);
-
 		//Write to the socket.
 		try {
 			OutputStream outp = socket.getOutputStream();
-			DataOutputStream dos = new DataOutputStream(outp);
-			dos.writeBytes(responsed);
-			dos.flush();
-			dos.close();
+			outp.write(response.getResponseHeader().getBytes());		//Write header as byte stream.
+			outp.write(new byte[]{13, 10});								//CRLF
+			outp.write(response.getMessageBody());						//Write body as byte stream.
+			outp.flush();
+			outp.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

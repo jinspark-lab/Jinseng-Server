@@ -2,6 +2,7 @@ package core.http;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Map;
@@ -49,12 +50,20 @@ public class HttpProtocolParser {
 		String[] requestRows = requested.split(TextUtil.CRLF);
 		
 		String[] requestLine = requestRows[0].split(TextUtil.BLANK);
+
+		//Exception handling. -> A Number of Components in requestLine are less than 3.
+		if(requestLine.length < 3){
+			return null;
+		}
+
+		//Parse request line headers.
 		HttpMethod method = HttpMethod.getType(requestLine[0]);
 		String uri = requestLine[1];
 		String version = requestLine[2];
 		
 		encodedRequest = new HttpRequest(method, uri, version);
 
+		//Make header options.
 		for(int i=1; i<requestRows.length-2; i++){
 			String row = requestRows[i];
 			String[] tuple = row.split(":");
@@ -65,8 +74,14 @@ public class HttpProtocolParser {
 		return encodedRequest;
 	}
 
-	public String DecodeResponse(HttpResponse responded){
-		String decodeResponse = responded.AssembleProtocol();
+	public String DecodeResponseText(HttpResponse responded){
+		String decodeResponse = "";
+		try {
+			decodeResponse = responded.getResponseText();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return decodeResponse;
 	}
 	

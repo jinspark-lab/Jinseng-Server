@@ -29,11 +29,11 @@ public class TestHttp {
 	public void testHttpResponseDecode(){
 		
 		HttpResponse response = new HttpResponse("HTTP/1.1", 200, "OK");
-		response.ConfigHeaderProperty("Cache-Control", "no-store, no-cache, must-revalidate");
-		response.ConfigBodyMessage("Life is everything");
+		response.setHeaderProperty("Cache-Control", "no-store, no-cache, must-revalidate");
+		response.setMessageBody("Life is everything");
 		
 		HttpProtocolParser parser = new HttpProtocolParser();
-		String responseText = parser.DecodeResponse(response);
+		String responseText = parser.DecodeResponseText(response);
 		
 		assertEquals("HTTP/1.1 200 OK" + TextUtil.CRLF + "Cache-Control:no-store, no-cache, must-revalidate" 
 		+ TextUtil.CRLF + TextUtil.CRLF + "Life is everything",responseText);
