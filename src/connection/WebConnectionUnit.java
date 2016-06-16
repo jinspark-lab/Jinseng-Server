@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import core.http.HttpRequest;
 import core.http.HttpResponse;
+import core.http.HttpServiceRouter;
 import core.http.HttpMethod;
 import core.http.HttpProtocolParser;
 import core.http.IWebServiceLogic;
@@ -15,13 +16,16 @@ public class WebConnectionUnit implements Runnable{
 
 	private String connectionId;
 	private Socket socket;
-	public IWebServiceLogic webServiceLogic;
+//	public IWebServiceLogic webServiceLogic;
 	private HttpProtocolParser httpParser;
+	private HttpServiceRouter router;
 	
-	public WebConnectionUnit(String id, Socket endPoint, IWebServiceLogic webService){
+	public WebConnectionUnit(String id, Socket endPoint, HttpServiceRouter route){
 		connectionId = id;
 		socket = endPoint;
-		webServiceLogic = webService;
+//		webServiceLogic = webService;
+		router = route;
+		
 		httpParser = new HttpProtocolParser();
 		System.out.println(endPoint.getInetAddress() + " has been connected");
 	}
@@ -52,27 +56,16 @@ public class WebConnectionUnit implements Runnable{
 		
 		//Encode message to proper HttpRequest type.
 		HttpRequest request = httpParser.EncodeRequest(httpParser.ReceiveMessage(socket));
+
+		//Get request URL and Request Type
+		String requestUrl = request.GetUrl();
+		HttpMethod requestType = request.GetRequestType();
 		
 		HttpResponse response = null;
 		
-		//Get Response from defined routine.
-		if(request.GetRequestType().equals(HttpMethod.GET)){
-			
-			response = webServiceLogic.HttpGetResponse(request);
-			
-		}else if(request.GetRequestType().equals(HttpMethod.POST)){
-
-			response = webServiceLogic.HttpPostResponse(request);
-			
-		}else if(request.GetRequestType().equals(HttpMethod.UPDATE)){
-			
-			response = webServiceLogic.HttpUpdateResponse(request);
-			
-		}else if(request.GetRequestType().equals(HttpMethod.DELETE)){
-			
-			response = webServiceLogic.HttpDeleteResponse(request);
-			
-		}
+		//Gain method from routing table.
+		IWebServiceLogic service = router.getRoutingMethod(requestUrl);
+		response = service.Respond(request);
 
 		DoRespond(response);
 

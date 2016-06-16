@@ -1,15 +1,14 @@
 package core.http;
 
-import java.net.Socket;
-
 public interface IWebServiceLogic {
+	/***
+	 * 
+	 *  Handle Response for each request that is given.
+	 *  You should handle each functions of HttpMethod(Get, Post, Update, Delete) inside the implementation.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public HttpResponse Respond(HttpRequest request);
 
-	public HttpResponse HttpGetResponse(HttpRequest request);
-	
-	public HttpResponse HttpPostResponse(HttpRequest request);
-	
-	public HttpResponse HttpUpdateResponse(HttpRequest request);
-	
-	public HttpResponse HttpDeleteResponse(HttpRequest request);
-	
 }

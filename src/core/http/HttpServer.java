@@ -19,32 +19,34 @@ public class HttpServer {
 	private ExecutorService threadPool;
 	private int threadMax = 12;
 	private int timeout = 60000;
-	private IWebServiceLogic serviceLogic;				//Service Logic of your application.
+//	private IWebServiceLogic serviceLogic;				//Service Logic of your application.
+	private HttpServiceRouter router;
 	
 	private ConnectionManager manager = ConnectionManager.GetInstance();
 
-	public HttpServer(IWebServiceLogic logic){
+	public HttpServer(HttpServiceRouter router){
 		
 		//Do implement without using high level api.
-		InitConfiguration(logic);
+		InitConfiguration(router);
 	}
-	public HttpServer(IWebServiceLogic logic, int timeout){
+	public HttpServer(HttpServiceRouter router, int timeout){
 
 		this.timeout = timeout;
-		InitConfiguration(logic);
+		InitConfiguration(router);
 	}
-	public HttpServer(IWebServiceLogic logic, int timeout, int threadMax){
+	public HttpServer(HttpServiceRouter router, int timeout, int threadMax){
 
 		this.timeout = timeout;
 		this.threadMax = threadMax;
-		InitConfiguration(logic);
+		InitConfiguration(router);
 	}
 
-	private void InitConfiguration(IWebServiceLogic service){
+	private void InitConfiguration(HttpServiceRouter route){
 		try {
 			server = new ServerSocket(port);
 			threadPool = Executors.newFixedThreadPool(threadMax);			//Allocate Threadpool by max size.
-			serviceLogic = service;
+//			serviceLogic = service;
+			router = route;
 
 			//Make server socket infinitely.
 			server.setSoTimeout(0);
@@ -71,7 +73,7 @@ public class HttpServer {
 					
 					//Passing parameters socket end point and service logic.
 	//				ConnectionUnit handler = manager.CreateNewUnit(endpoint, serviceLogic, false);
-					WebConnectionUnit handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, serviceLogic);
+					WebConnectionUnit handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, router);
 					
 					tmpId++;
 					

@@ -11,6 +11,7 @@ import core.http.HttpProtocolParser;
 import core.http.HttpRequest;
 import core.http.HttpResponse;
 import core.http.HttpServer;
+import core.http.HttpServiceRouter;
 import core.tcp.*;
 import sample.http.EchoWebService;
 import sample.tcp.ChatRoomService;
@@ -53,7 +54,11 @@ public class Main {
 	}
 	
 	private static void LaunchEchoWebServer(){
-		HttpServer server = new HttpServer(new EchoWebService(), 60000);
+
+		HttpServiceRouter route = new HttpServiceRouter();
+		route.setRoutingMethod("*", new EchoWebService());
+		
+		HttpServer server = new HttpServer(route, 60000);
 		try {
 			server.RunServer();
 		} catch (IOException e) {

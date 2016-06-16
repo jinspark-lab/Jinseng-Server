@@ -6,17 +6,29 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import common.TextUtil;
+import core.http.HttpMethod;
 import core.http.HttpProtocolParser;
 import core.http.HttpRequest;
 import core.http.HttpResponse;
 import core.http.IWebServiceLogic;
 
 public class EchoWebService implements IWebServiceLogic{
-
-	public HttpResponse HttpGetResponse(HttpRequest request){
+	
+	public HttpResponse Respond(HttpRequest request){
 		
+		HttpResponse response = null;
+		if(request.GetRequestType().equals(HttpMethod.GET)){
+			response = ResponseGET(request);
+		}else if(request.GetRequestType().equals(HttpMethod.POST)){
+			response = null;
+		}
+		return response;
+	}
+	
+	private HttpResponse ResponseGET(HttpRequest request){
 		
-		String output = "[Jinseng] Says Hello : " + request.GetUrl();
+		String output = "[Jinseng] Says Hello : " + request.GetUrl() + TextUtil.CRLF + "(If you want to see a bird, than call query /image)";
 		
 		System.out.println(output);
 		
@@ -50,16 +62,5 @@ public class EchoWebService implements IWebServiceLogic{
 		
 		return respond;
 	}
-	
-	public HttpResponse HttpPostResponse(HttpRequest request){
-		return null;
-	}
-	
-	public HttpResponse HttpUpdateResponse(HttpRequest request){
-		return null;
-	}
-	
-	public HttpResponse HttpDeleteResponse(HttpRequest request){
-		return null;
-	}
+
 }
