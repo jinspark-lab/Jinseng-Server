@@ -14,6 +14,7 @@ import core.http.HttpServer;
 import core.http.HttpServiceRouter;
 import core.tcp.*;
 import sample.http.EchoWebService;
+import sample.http.RestWebService;
 import sample.tcp.ChatRoomService;
 import sample.tcp.FileTransferService;
 import sample.tcp.PrintService;
@@ -55,10 +56,21 @@ public class Main {
 	
 	private static void LaunchEchoWebServer(){
 
-		HttpServiceRouter route = new HttpServiceRouter();
-		route.setRoutingMethod("*", new EchoWebService());
+//		HttpServiceRouter route = new HttpServiceRouter();
+//		route.setRoutingMethod("*", new EchoWebService());
 		
-		HttpServer server = new HttpServer(route, 60000);
+		HttpServer server = new HttpServer(new EchoWebService(), 60000);
+		try {
+			server.RunServer();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		server.EndServer();
+	}
+	
+	private static void LaunchRestWebServer(){
+		HttpServer server = new HttpServer(new RestWebService(), 60000);
 		try {
 			server.RunServer();
 		} catch (IOException e) {
@@ -74,7 +86,9 @@ public class Main {
 		
 //		LaunchChatRoomServer();
 		
-		LaunchEchoWebServer();
+//		LaunchEchoWebServer();
+		
+		LaunchRestWebServer();
 		
 	}
 	

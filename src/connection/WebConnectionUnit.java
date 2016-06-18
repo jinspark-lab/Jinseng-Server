@@ -16,14 +16,26 @@ public class WebConnectionUnit implements Runnable{
 
 	private String connectionId;
 	private Socket socket;
-//	public IWebServiceLogic webServiceLogic;
+
+	public IWebServiceLogic webServiceLogic;		//Single webservice logic for simple static page. it does not be with router.
+	private HttpServiceRouter router;				//Webservice logic router for multiple functional page. it does not be with webServiceLogic.
+
 	private HttpProtocolParser httpParser;
-	private HttpServiceRouter router;
+
+	public WebConnectionUnit(String id, Socket endPoint, IWebServiceLogic service){
+		connectionId = id;
+		socket = endPoint;
+		webServiceLogic = service;
+		router = null;
+		
+		httpParser = new HttpProtocolParser();
+		System.out.println(endPoint.getInetAddress() + " has been connected");
+	}
 	
 	public WebConnectionUnit(String id, Socket endPoint, HttpServiceRouter route){
 		connectionId = id;
 		socket = endPoint;
-//		webServiceLogic = webService;
+		webServiceLogic = null;
 		router = route;
 		
 		httpParser = new HttpProtocolParser();
@@ -63,8 +75,13 @@ public class WebConnectionUnit implements Runnable{
 		
 		HttpResponse response = null;
 		
-		//Gain method from routing table.
-		IWebServiceLogic service = router.getRoutingMethod(requestUrl);
+		IWebServiceLogic service = null;
+		if(router != null){
+			//Gain method from routing table.
+			service = router.getRoutingMethod(requestUrl);
+		}else{
+			service = webServiceLogic;
+		}
 		response = service.Respond(request);
 
 		DoRespond(response);

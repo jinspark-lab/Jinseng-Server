@@ -19,8 +19,8 @@ public class HttpServer {
 	private ExecutorService threadPool;
 	private int threadMax = 12;
 	private int timeout = 60000;
-//	private IWebServiceLogic serviceLogic;				//Service Logic of your application.
-	private HttpServiceRouter router;
+	private IWebServiceLogic serviceLogic;				//Single webservice logic for simple static page. it does not be with router.
+	private HttpServiceRouter router;					//Webservice logic router for multiple functional page. it does not be with webServiceLogic.
 	
 	private ConnectionManager manager = ConnectionManager.GetInstance();
 
@@ -40,12 +40,44 @@ public class HttpServer {
 		this.threadMax = threadMax;
 		InitConfiguration(router);
 	}
+	
+	public HttpServer(IWebServiceLogic service){
+		
+		InitConfiguration(service);
+	}
+	
+	public HttpServer(IWebServiceLogic service, int timeout){
+		this.timeout = timeout;
+		InitConfiguration(service);
+	}
+	
+	public HttpServer(IWebServiceLogic service, int timeout, int threadMax){
+		this.timeout = timeout;
+		this.threadMax = threadMax;
+		InitConfiguration(service);
+	}
 
+	private void InitConfiguration(IWebServiceLogic service){
+		try {
+			server = new ServerSocket(port);
+			threadPool = Executors.newFixedThreadPool(threadMax);			//Allocate Threadpool by max size.
+			serviceLogic = service;
+			router = null;
+
+			//Make server socket infinitely.
+			server.setSoTimeout(0);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void InitConfiguration(HttpServiceRouter route){
 		try {
 			server = new ServerSocket(port);
 			threadPool = Executors.newFixedThreadPool(threadMax);			//Allocate Threadpool by max size.
-//			serviceLogic = service;
+			serviceLogic = null;
 			router = route;
 
 			//Make server socket infinitely.
@@ -73,7 +105,12 @@ public class HttpServer {
 					
 					//Passing parameters socket end point and service logic.
 	//				ConnectionUnit handler = manager.CreateNewUnit(endpoint, serviceLogic, false);
-					WebConnectionUnit handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, router);
+					WebConnectionUnit handler = null;
+					
+					if(router != null)
+						handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, router);
+					else
+						handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, serviceLogic);
 					
 					tmpId++;
 					
