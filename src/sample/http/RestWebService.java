@@ -1,5 +1,9 @@
 package sample.http;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
+import common.JsonObject;
 import common.TextUtil;
 import core.http.HttpRequest;
 import core.http.HttpResponse;
@@ -41,8 +45,60 @@ public class RestWebService implements IWebServiceLogic{
 		return grade;
 	}
 	
+	/***
+	 * Set dummy friends in student that of given name.
+	 * @param name
+	 * @return
+	 */
+	private ArrayList<Object> CallFriends(String name){
+		ArrayList<Object> friends = new ArrayList<Object>();
+
+		if(name.equals("tomas")){
+			friends.add("mike");
+			friends.add("james");
+			friends.add("rollen");
+		}else if(name.equals("james")){
+			friends.add("tomas");
+			friends.add("kate");
+			friends.add("teddy");
+		}else if(name.equals("rollen")){
+			friends.add("nichole");
+			friends.add("tomas");
+			friends.add("sara");
+		}
+		return friends;
+	}
+	
+	/***
+	 * Set dummy scores in student that of given name.
+	 * @param name
+	 * @return
+	 */
+	private LinkedHashMap<String, Object> ReadScore(String name){
+		LinkedHashMap<String, Object> score = new LinkedHashMap<String, Object>();
+		
+		if(name.equals("tomas")){
+			score.put("math", 100);
+			score.put("english", 97);
+			score.put("science", 78);
+		}else if(name.equals("james")){
+			score.put("math", 80);
+			score.put("english", 77);
+			score.put("science", 100);
+		}else if(name.equals("rollen")){
+			score.put("math", 60);
+			score.put("english", 100);
+			score.put("science", 90);
+		}
+		return score;
+	}
+	
+	/***
+	 * This method mimics the action that of selecting data from database from given query.
+	 * @param query
+	 * @return
+	 */
 	private String MockDatabase(String query){
-		String result = "{" + TextUtil.CRLF;
 		String[] parts = query.split("/");
 		if(parts.length < 3)
 			return "Error in query string";
@@ -50,18 +106,21 @@ public class RestWebService implements IWebServiceLogic{
 		String name = parts[0];
 		String grade = ClassifyGrade(parts[1]);
 		String age = parts[2];
+
+		JsonObject jobj = new JsonObject();
+		jobj.PutElement("name", name);
+		jobj.PutElement("grade", grade);
+		jobj.PutElement("age", Integer.parseInt(age));
+
+		ArrayList<Object> friends = CallFriends(name);
+
+		jobj.PutElement("friends", friends);
+
+		LinkedHashMap<String, Object> score = ReadScore(name);
 		
-		result += "name : " + name + TextUtil.DOT + TextUtil.CRLF;
-		result += "grade : " + grade + TextUtil.DOT + TextUtil.CRLF;
-		result += "age : " + age + TextUtil.DOT + TextUtil.CRLF;
+		jobj.PutElement("score", score);
 		
-		String info = "info : ";
-		
-		if(grade.equals("senior") && TextUtil.TextContains(name, "tomas", true)){
-			info += "Leader";
-		}
-		
-		result += info + TextUtil.CRLF + "}";
+		String result = jobj.Stringify();
 		
 		return result;
 	}

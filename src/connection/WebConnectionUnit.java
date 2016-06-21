@@ -69,22 +69,24 @@ public class WebConnectionUnit implements Runnable{
 		//Encode message to proper HttpRequest type.
 		HttpRequest request = httpParser.EncodeRequest(httpParser.ReceiveMessage(socket));
 
-		//Get request URL and Request Type
-		String requestUrl = request.GetUrl();
-		HttpMethod requestType = request.GetRequestType();
-		
-		HttpResponse response = null;
-		
-		IWebServiceLogic service = null;
-		if(router != null){
-			//Gain method from routing table.
-			service = router.getRoutingMethod(requestUrl);
-		}else{
-			service = webServiceLogic;
+		if(request.GetUrl().length() > 0 && request != null){
+			//Get request URL and Request Type
+			String requestUrl = request.GetUrl();
+			HttpMethod requestType = request.GetRequestType();
+			
+			HttpResponse response = null;
+			
+			IWebServiceLogic service = null;
+			if(router != null){
+				//Gain method from routing table.
+				service = router.getRoutingMethod(requestUrl);
+			}else{
+				service = webServiceLogic;
+			}
+			response = service.Respond(request);
+	
+			DoRespond(response);
 		}
-		response = service.Respond(request);
-
-		DoRespond(response);
 
 		try {
 			socket.close();

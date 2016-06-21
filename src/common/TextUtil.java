@@ -8,6 +8,7 @@ public class TextUtil {
 	public static String CRLF = "\r\n";
 	public static String BLANK = " ";
 	public static String DOT = ",";
+	public static String QUOTATION = "\"";
 	
 	/***
 	 *  Remote unnecessary bytes from information
@@ -35,6 +36,12 @@ public class TextUtil {
 			return Pattern.compile(Pattern.quote(pattern), Pattern.CASE_INSENSITIVE).matcher(text).find();
 		else
 			return Pattern.compile(Pattern.quote(pattern), Pattern.LITERAL).matcher(text).find();
+	}
+	
+	
+	
+	public static String BraceQuotation(String text){
+		return QUOTATION + text + QUOTATION;
 	}
 	
 }
