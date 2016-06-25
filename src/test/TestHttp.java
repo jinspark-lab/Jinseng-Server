@@ -2,6 +2,8 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.Test;
 
 import common.TextUtil;
@@ -18,11 +20,11 @@ public class TestHttp {
 		HttpProtocolParser parser = new HttpProtocolParser();
 		HttpRequest request = parser.EncodeRequest(requestText);
 		
-		assertEquals(HttpMethod.GET, request.GetRequestType());
+		assertEquals(HttpMethod.GET, request.getRequestType());
 		
-		assertEquals("main.html", request.GetUrl());
+		assertEquals("/main.html", request.getUrl());
 		
-		assertEquals("So long and thanks for all the fish", request.GetMessageBody());
+		assertEquals("So long and thanks for all the fish", request.getMessageBody());
 	}
 	
 	@Test
@@ -39,7 +41,30 @@ public class TestHttp {
 		+ TextUtil.CRLF + TextUtil.CRLF + "Life is everything",responseText);
 	}
 	
-	
+	@Test
+	public void testHttpUrlHandle(){
+		
+		String url = "/rest/v1/test/mail.html?id=12345&account=admin";
+		
+		try {
+			HttpUrl newUrl = new HttpUrl(url);
+			
+			assertEquals("/rest/v1/test/mail.html", newUrl.getPathString());
+			
+			assertEquals("id=12345&account=admin", newUrl.getQueryString());
+			
+			assertEquals("12345", newUrl.getQueryElement("id"));
+			
+			assertEquals("test", newUrl.getPathElement(2));
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
 	
 	
 	

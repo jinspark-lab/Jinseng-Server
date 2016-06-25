@@ -2,9 +2,11 @@ package main;
 
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import common.LogReporter;
 import core.http.HttpServer;
+import core.http.HttpUrl;
 import core.tcp.*;
 import sample.http.EchoWebService;
 import sample.http.RestWebService;
@@ -82,7 +84,7 @@ public class Main {
 //		LaunchEchoWebServer();
 		
 		LaunchRestWebServer();
-		
+
 		
 	}
 	

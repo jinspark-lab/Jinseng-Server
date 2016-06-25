@@ -1,5 +1,6 @@
 package core.http;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,29 +14,45 @@ public class HttpRequest {
 	
 	private HttpMethod requestType;
 	private String defaultVersion = "HTTP/1.1";
-	private String url = "";
+	private HttpUrl url = null;
 	
 	public HttpRequest(HttpMethod method, String uri){
 		requestType = method;
-		url = uri;
+
+		//Add handling ways for charset of the page.
+		try {
+			url = new HttpUrl(uri);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		requestLine += method.getMethod() + TextUtil.BLANK + uri + TextUtil.BLANK + defaultVersion + TextUtil.CRLF;
 	}
 	
 	//How to handle updating of http version???. current 1.1, but 1.0 is old.
 	public HttpRequest(HttpMethod method, String uri, String version){
 		requestType = method;
-		url = uri;
+		
+		//Add handling ways for charset of the page.
+		try {
+			url = new HttpUrl(uri);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		System.out.println(requestLine);
 		requestLine += method.getMethod() + TextUtil.BLANK + uri + TextUtil.BLANK + defaultVersion + TextUtil.CRLF;
 	}
 	
-	public HttpMethod GetRequestType(){
+	public HttpMethod getRequestType(){
 		return requestType;
 	}
 
-	public String GetUrl(){
+	public String getUrl(){
 		//Remove '/' from query String.
-		return url.substring(1);
+		return url.toString();
 	}
 	
 	//RequestHeader elements.
@@ -61,7 +78,7 @@ public class HttpRequest {
 		return request;
 	}
 	
-	public String GetMessageBody(){
+	public String getMessageBody(){
 		return messageBody;
 	}
 		

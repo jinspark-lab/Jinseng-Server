@@ -77,7 +77,7 @@ public class HttpProtocolParser {
 	public String DecodeResponseText(HttpResponse responded){
 		String decodeResponse = "";
 		try {
-			decodeResponse = responded.getResponseText();
+			decodeResponse = responded.getResponseString();
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

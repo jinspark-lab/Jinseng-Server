@@ -1,8 +1,9 @@
-package common;
+package common.data;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import common.TextUtil;
 
 public class JsonObject {
 

@@ -49,7 +49,7 @@ public class WebConnectionUnit implements Runnable{
 		//Write to the socket.
 		try {
 			OutputStream outp = socket.getOutputStream();
-			outp.write(response.getResponseHeader().getBytes());		//Write header as byte stream.
+			outp.write(response.getResponseHeaderString().getBytes());		//Write header as byte stream.
 			outp.write(new byte[]{13, 10});								//CRLF
 			outp.write(response.getMessageBody());						//Write body as byte stream.
 			outp.flush();
@@ -69,10 +69,10 @@ public class WebConnectionUnit implements Runnable{
 		//Encode message to proper HttpRequest type.
 		HttpRequest request = httpParser.EncodeRequest(httpParser.ReceiveMessage(socket));
 
-		if(request.GetUrl().length() > 0 && request != null){
+		if(request != null && request.getUrl().length() > 0){
 			//Get request URL and Request Type
-			String requestUrl = request.GetUrl();
-			HttpMethod requestType = request.GetRequestType();
+			String requestUrl = request.getUrl();
+			HttpMethod requestType = request.getRequestType();
 			
 			HttpResponse response = null;
 			

@@ -1,12 +1,14 @@
 package sample.http;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import common.JsonObject;
+import common.data.JsonObject;
 import common.TextUtil;
 import core.http.HttpRequest;
 import core.http.HttpResponse;
+import core.http.HttpUrl;
 import core.http.IWebServiceLogic;
 
 public class RestWebService implements IWebServiceLogic{
@@ -17,7 +19,7 @@ public class RestWebService implements IWebServiceLogic{
 	 */
 	public HttpResponse Respond(HttpRequest request){
 		
-		String url = request.GetUrl();
+		String url = request.getUrl();
 		String refer = MockDatabase(url);
 		
 		HttpResponse response = new HttpResponse("HTTP/1.1", 200, "OK");
@@ -99,13 +101,22 @@ public class RestWebService implements IWebServiceLogic{
 	 * @return
 	 */
 	private String MockDatabase(String query){
-		String[] parts = query.split("/");
-		if(parts.length < 3)
-			return "Error in query string";
-		
-		String name = parts[0];
-		String grade = ClassifyGrade(parts[1]);
-		String age = parts[2];
+
+		HttpUrl reqUrl;
+		String name = "";
+		String grade = "";
+		String age = "";
+		try {
+			reqUrl = new HttpUrl(query);
+
+			name = reqUrl.getPathElement(0);
+			grade = ClassifyGrade(reqUrl.getPathElement(1));
+			age = reqUrl.getPathElement(2);
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		JsonObject jobj = new JsonObject();
 		jobj.PutElement("name", name);

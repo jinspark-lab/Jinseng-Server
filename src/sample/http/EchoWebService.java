@@ -18,9 +18,9 @@ public class EchoWebService implements IWebServiceLogic{
 	public HttpResponse Respond(HttpRequest request){
 		
 		HttpResponse response = null;
-		if(request.GetRequestType().equals(HttpMethod.GET)){
+		if(request.getRequestType().equals(HttpMethod.GET)){
 			response = ResponseGET(request);
-		}else if(request.GetRequestType().equals(HttpMethod.POST)){
+		}else if(request.getRequestType().equals(HttpMethod.POST)){
 			response = null;
 		}
 		return response;
@@ -28,13 +28,13 @@ public class EchoWebService implements IWebServiceLogic{
 	
 	private HttpResponse ResponseGET(HttpRequest request){
 		
-		String output = "[Jinseng] Says Hello : " + request.GetUrl() + TextUtil.CRLF + "(If you want to see a bird, than call query /image)";
+		String output = "[Jinseng] Says Hello : " + request.getUrl() + TextUtil.CRLF + "(If you want to see a bird, than call query /image)";
 		
 		System.out.println(output);
 		
 		HttpResponse respond = new HttpResponse("HTTP/1.1", 200, "OK");
 		
-		if(request.GetUrl().contains("image")){
+		if(request.getUrl().contains("image")){
 			//Send Image when protocol has the string "image"
 			File f = new File("toucan.jpg");
 			try {

@@ -19,11 +19,11 @@ public class HttpResponse {
 		statusLine += version + TextUtil.BLANK + String.valueOf(responseCode) + TextUtil.BLANK + responseMsg + TextUtil.CRLF;
 	}
 
-	public String GetStatusLine(){
+	public String getStatusLine(){
 		return statusLine;
 	}
 	
-	public Map<String, String> GetResponseHeader(){
+	public Map<String, String> getResponseHeader(){
 		return responseHeader;
 	}
 	
@@ -51,7 +51,7 @@ public class HttpResponse {
 			messageBody[i] = message[i];
 	}
 	
-	public String getResponseHeader(){
+	public String getResponseHeaderString(){
 		String header = statusLine;
 		for(String key : responseHeader.keySet()){
 			header += key + ":" + responseHeader.get(key) + TextUtil.CRLF;
@@ -59,7 +59,7 @@ public class HttpResponse {
 		return header;
 	}
 	
-	public String getResponseText() throws UnsupportedEncodingException{
+	public String getResponseString() throws UnsupportedEncodingException{
 		//Assemble reponse object as String object.
 		String response = statusLine;
 		for(String key : responseHeader.keySet()){
