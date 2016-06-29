@@ -62,10 +62,16 @@ public class TestHttp {
 			e.printStackTrace();
 		}
 		
-		
-		
 	}
 	
-	
+	@Test
+	public void testParamRouting(){
+		HttpServiceRouter route = new HttpServiceRouter();
+		
+		route.setRoutingMethod("/paths/{path}/accounts/{account}", null);
+
+		assertEquals(null, route.getRoutingMethod("/paths/10/accounts/newman"));
+		
+	}
 	
 }

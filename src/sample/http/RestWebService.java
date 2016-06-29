@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import common.data.JsonObject;
 import common.TextUtil;
+import core.http.HttpMethod;
 import core.http.HttpRequest;
 import core.http.HttpResponse;
 import core.http.HttpUrl;
@@ -13,23 +14,78 @@ import core.http.IWebServiceLogic;
 
 public class RestWebService implements IWebServiceLogic{
 
+	private LinkedHashMap<String, JsonObject> memCache = new LinkedHashMap<String, JsonObject>();
 	
 	/***
 	 * Send response message of printing certain json information to user in specific url.
 	 */
 	public HttpResponse Respond(HttpRequest request){
 		
-		String url = request.getUrl();
-		String refer = MockDatabase(url);
+		String url = request.getUrlPath();
+		HttpMethod method = request.getRequestType();
 		
+		String returnValue = "";
+		if(method.equals(HttpMethod.GET)){
+			returnValue = GET(url);
+		}else if(method.equals(HttpMethod.POST)){
+			returnValue = POST(url);
+		}
+				
 		HttpResponse response = new HttpResponse("HTTP/1.1", 200, "OK");
 		response.setHeaderProperty("Content-Type", "application/json;charset=utf-8");
-		response.setHeaderProperty("Content-Length", String.valueOf(refer.length() + 2));
+		response.setHeaderProperty("Content-Length", String.valueOf(returnValue.length() + 2));
 		response.setHeaderProperty("Cache-Control", "no-cache");
-		response.setMessageBody(refer);
+		response.setMessageBody(returnValue);
 		
 		return response;
 	}
+	
+	private String GET(String url){
+		String val = MockDatabase(url);
+		if(val == null)
+			return "";
+		return val;
+	}
+	
+	private String POST(String url){
+		String returnMsg = "Success to save in server!";
+		try{
+			String name = "";
+			String grade = "";
+			String age = "";
+			try {
+				HttpUrl reqUrl = new HttpUrl(url);
+	
+				name = reqUrl.getPathElement(1);
+				grade = ClassifyGrade(reqUrl.getPathElement(2));
+				age = reqUrl.getPathElement(3);
+				
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+			JsonObject jobj = new JsonObject();
+			jobj.PutElement("name", name);
+			jobj.PutElement("grade", grade);
+			jobj.PutElement("age", Integer.parseInt(age));
+	
+			ArrayList<Object> friends = CallFriends(name);
+	
+			jobj.PutElement("friends", friends);
+	
+			LinkedHashMap<String, Object> score = ReadScore(name);
+			
+			jobj.PutElement("score", score);
+			
+	
+			memCache.put(url, jobj);
+		}catch(Exception e){
+			returnMsg = "Failed to save in server. maybe there is an error.";
+		}
+		return returnMsg;
+	}
+	
 	
 	private String ClassifyGrade(String part){
 		String grade = "";
@@ -100,40 +156,16 @@ public class RestWebService implements IWebServiceLogic{
 	 * @param query
 	 * @return
 	 */
-	private String MockDatabase(String query){
+	private String MockDatabase(String url){
 
-		HttpUrl reqUrl;
-		String name = "";
-		String grade = "";
-		String age = "";
-		try {
-			reqUrl = new HttpUrl(query);
-
-			name = reqUrl.getPathElement(0);
-			grade = ClassifyGrade(reqUrl.getPathElement(1));
-			age = reqUrl.getPathElement(2);
+		if(memCache.containsKey(url)){
+			JsonObject jobj = memCache.get(url);
 			
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String result = jobj.Stringify();
+			
+			return result;
 		}
-
-		JsonObject jobj = new JsonObject();
-		jobj.PutElement("name", name);
-		jobj.PutElement("grade", grade);
-		jobj.PutElement("age", Integer.parseInt(age));
-
-		ArrayList<Object> friends = CallFriends(name);
-
-		jobj.PutElement("friends", friends);
-
-		LinkedHashMap<String, Object> score = ReadScore(name);
-		
-		jobj.PutElement("score", score);
-		
-		String result = jobj.Stringify();
-		
-		return result;
+		return null;
 	}
 	
 }

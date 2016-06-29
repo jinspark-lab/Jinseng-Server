@@ -50,8 +50,12 @@ public class HttpRequest {
 		return requestType;
 	}
 
-	public String getUrl(){
+	public HttpUrl getUrl(){
 		//Remove '/' from query String.
+		return url;
+	}
+	
+	public String getUrlPath(){
 		return url.toString();
 	}
 	

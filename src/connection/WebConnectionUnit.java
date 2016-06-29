@@ -69,9 +69,9 @@ public class WebConnectionUnit implements Runnable{
 		//Encode message to proper HttpRequest type.
 		HttpRequest request = httpParser.EncodeRequest(httpParser.ReceiveMessage(socket));
 
-		if(request != null && request.getUrl().length() > 0){
+		if(request != null && request.getUrlPath().length() > 0){
 			//Get request URL and Request Type
-			String requestUrl = request.getUrl();
+			String requestUrl = request.getUrlPath();
 			HttpMethod requestType = request.getRequestType();
 			
 			HttpResponse response = null;
@@ -83,7 +83,8 @@ public class WebConnectionUnit implements Runnable{
 			}else{
 				service = webServiceLogic;
 			}
-			response = service.Respond(request);
+			if(service != null)
+				response = service.Respond(request);
 	
 			DoRespond(response);
 		}

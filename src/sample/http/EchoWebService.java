@@ -34,7 +34,7 @@ public class EchoWebService implements IWebServiceLogic{
 		
 		HttpResponse respond = new HttpResponse("HTTP/1.1", 200, "OK");
 		
-		if(request.getUrl().contains("image")){
+		if(request.getUrlPath().contains("image")){
 			//Send Image when protocol has the string "image"
 			File f = new File("toucan.jpg");
 			try {

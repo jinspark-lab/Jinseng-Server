@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 import common.LogReporter;
 import core.http.HttpServer;
+import core.http.HttpServiceRouter;
 import core.http.HttpUrl;
 import core.tcp.*;
 import sample.http.EchoWebService;
@@ -65,7 +66,11 @@ public class Main {
 	}
 	
 	private static void LaunchRestWebServer(){
-		HttpServer server = new HttpServer(new RestWebService(), 60000);
+
+		HttpServiceRouter route = new HttpServiceRouter();
+		route.setRoutingMethod("/students/{name}/{grade}/{age}", new RestWebService());
+//		HttpServer server = new HttpServer(new RestWebService(), 60000);
+		HttpServer server = new HttpServer(route, 60000);
 		try {
 			server.RunServer();
 		} catch (IOException e) {
