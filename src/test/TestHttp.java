@@ -22,7 +22,7 @@ public class TestHttp {
 		
 		assertEquals(HttpMethod.GET, request.getRequestType());
 		
-		assertEquals("/main.html", request.getUrl());
+		assertEquals("/main.html", request.getUrlPath());
 		
 		assertEquals("So long and thanks for all the fish", request.getMessageBody());
 	}

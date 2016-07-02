@@ -9,7 +9,17 @@ public enum HttpMethod {
 	OPTIONS("OPTIONS"),
 	HEAD("HEAD"),
 	TRACE("TRACE"),
-	CONNECT("CONNECT");
+	CONNECT("CONNECT"),
+	PATCH("PATCH"),
+	COPY("COPY"),
+	LINK("LINK"),
+	UNLINK("UNLINK"),
+	PURGE("PURGE"),
+	LOCK("LOCK"),
+	UNLOCK("UNLOCK"),
+	PROPFIND("PROPFIND"),
+	VIEW("VIEW");
+	
 	
 	private String method;
 	HttpMethod(String text){
@@ -35,6 +45,24 @@ public enum HttpMethod {
 			return TRACE;
 		else if(data.equals("CONNECT"))
 			return CONNECT;
+		else if(data.equals("PATCH"))
+			return PATCH;
+		else if(data.equals("COPY"))
+			return COPY;
+		else if(data.equals("LINK"))
+			return LINK;
+		else if(data.equals("UNLINK"))
+			return UNLINK;
+		else if(data.equals("PURGE"))
+			return PURGE;
+		else if(data.equals("LOCK"))
+			return LOCK;
+		else if(data.equals("UNLOCK"))
+			return UNLOCK;
+		else if(data.equals("PROPFIND"))
+			return PROPFIND;
+		else if(data.equals("VIEW"))
+			return VIEW;
 		return null;
 	}
 }

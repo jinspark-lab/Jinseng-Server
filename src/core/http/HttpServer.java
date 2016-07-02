@@ -92,7 +92,6 @@ public class HttpServer {
 	public void RunServer() throws IOException{
 		System.out.println("Waiting for client message...");
 		
-		int tmpId = 0;
 		try{
 			while(true){
 				try {
@@ -104,15 +103,12 @@ public class HttpServer {
 					System.out.println("Accepted");
 					
 					//Passing parameters socket end point and service logic.
-	//				ConnectionUnit handler = manager.CreateNewUnit(endpoint, serviceLogic, false);
 					WebConnectionUnit handler = null;
 					
 					if(router != null)
-						handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, router);
+						handler = manager.CreateNewWebUnit(endpoint, router);
 					else
-						handler = new WebConnectionUnit(String.valueOf(tmpId), endpoint, serviceLogic);
-					
-					tmpId++;
+						handler = manager.CreateNewWebUnit(endpoint, serviceLogic);
 					
 					//Execute thread pool.
 					threadPool.execute(handler);

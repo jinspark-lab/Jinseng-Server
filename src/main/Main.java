@@ -69,8 +69,8 @@ public class Main {
 
 		HttpServiceRouter route = new HttpServiceRouter();
 		route.setRoutingMethod("/students/{name}/{grade}/{age}", new RestWebService());
-//		HttpServer server = new HttpServer(new RestWebService(), 60000);
 		HttpServer server = new HttpServer(route, 60000);
+		
 		try {
 			server.RunServer();
 		} catch (IOException e) {
