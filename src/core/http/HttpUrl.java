@@ -21,15 +21,17 @@ public class HttpUrl {
 	//Should separate exception handling ways. > UnsupportedEncodingException in default constructor ("UTF-8") => Only throw errors when original code has defects.
 	
 	public HttpUrl(String url) throws UnsupportedEncodingException{
-		this.route = url;
+		this.route = this.urlDecode(url, charset);
 		String[] parts = url.split("\\?");
 
 		if(parts.length > 0){
-			pathUrl = parts[0];
-			buildPathes(parts[0]);
+			String decodePath = this.urlDecode(parts[0], charset);
+			pathUrl = decodePath;
+			buildPathes(decodePath);
 			if(parts.length > 1){
-				queryUrl = parts[1];
-				buildQuery(parts[1]);
+				String decodeQuery = this.urlDecode(parts[1], charset);
+				queryUrl = decodeQuery;
+				buildQuery(decodeQuery);
 			}
 		}else{
 			//Error handling.
@@ -40,11 +42,13 @@ public class HttpUrl {
 		this.route = url;
 		String[] parts = url.split("\\?");
 		if(parts.length > 0){
-			pathUrl = parts[0];
-			buildPathes(parts[0]);
+			String decodePath = this.urlDecode(parts[0], charset);
+			pathUrl = decodePath;
+			buildPathes(decodePath);
 			if(parts.length > 1){
-				queryUrl = parts[1];
-				buildQuery(parts[1]);
+				String decodeQuery = this.urlDecode(parts[1], charset);
+				queryUrl = decodeQuery;
+				buildQuery(decodeQuery);
 			}
 		}
 		charset = customCharset;
@@ -52,6 +56,21 @@ public class HttpUrl {
 	
 	public String toString(){
 		return route;
+	}
+	
+	public String getUrlCharset(){
+		return charset;
+	}
+	
+	public String getEncodedUrl(){
+		String encodedUrl = null;
+		try {
+			encodedUrl = this.urlEncode(route, charset);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return encodedUrl;
 	}
 	
 	public String getPathString(){

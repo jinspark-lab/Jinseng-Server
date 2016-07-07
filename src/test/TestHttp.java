@@ -30,7 +30,7 @@ public class TestHttp {
 	@Test
 	public void testHttpResponseDecode(){
 		
-		HttpResponse response = new HttpResponse("HTTP/1.1", 200, "OK");
+		HttpResponse response = new HttpResponse(200, "OK");
 		response.setHeaderProperty("Cache-Control", "no-store, no-cache, must-revalidate");
 		response.setMessageBody("Life is everything");
 		

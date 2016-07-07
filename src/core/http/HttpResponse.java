@@ -13,10 +13,15 @@ public class HttpResponse {
 	private String statusLine = "";
 	private Map<String, String> responseHeader = new HashMap<String, String>();
 	private byte[] messageBody = {0, };
-	
-	public HttpResponse(String version, int responseCode, String responseMsg){
+
+	public HttpResponse(int responseCode, String responseMsg){
 		
-		statusLine += version + TextUtil.BLANK + String.valueOf(responseCode) + TextUtil.BLANK + responseMsg + TextUtil.CRLF;
+		statusLine += HttpProtocolVersion.getMajorVersion() + TextUtil.BLANK + String.valueOf(responseCode) + TextUtil.BLANK + responseMsg + TextUtil.CRLF;
+	}
+	
+	public HttpResponse(HttpProtocolVersion version, int responseCode, String responseMsg){
+		
+		statusLine += version.getVersion() + TextUtil.BLANK + String.valueOf(responseCode) + TextUtil.BLANK + responseMsg + TextUtil.CRLF;
 	}
 
 	public String getStatusLine(){

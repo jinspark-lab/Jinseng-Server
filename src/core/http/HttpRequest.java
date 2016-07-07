@@ -13,7 +13,7 @@ public class HttpRequest {
 	private String messageBody = "";
 	
 	private HttpMethod requestType;
-	private String defaultVersion = "HTTP/1.1";
+	private String protocolVersion = HttpProtocolVersion.getMajorVersion();
 	private HttpUrl url = null;
 	
 	public HttpRequest(HttpMethod method, String uri){
@@ -27,7 +27,7 @@ public class HttpRequest {
 			e.printStackTrace();
 		}
 		
-		requestLine += method.getMethod() + TextUtil.BLANK + uri + TextUtil.BLANK + defaultVersion + TextUtil.CRLF;
+		requestLine += method.getMethod() + TextUtil.BLANK + uri + TextUtil.BLANK + protocolVersion + TextUtil.CRLF;
 	}
 	
 	//How to handle updating of http version???. current 1.1, but 1.0 is old.
@@ -42,8 +42,11 @@ public class HttpRequest {
 			e.printStackTrace();
 		}
 		
+		HttpProtocolVersion newVersion = new HttpProtocolVersion(version);
+		protocolVersion = newVersion.getVersion();
+		
 		System.out.println(requestLine);
-		requestLine += method.getMethod() + TextUtil.BLANK + uri + TextUtil.BLANK + defaultVersion + TextUtil.CRLF;
+		requestLine += method.getMethod() + TextUtil.BLANK + url.getEncodedUrl() + TextUtil.BLANK + protocolVersion + TextUtil.CRLF;
 	}
 	
 	public HttpMethod getRequestType(){
@@ -85,6 +88,5 @@ public class HttpRequest {
 	public String getMessageBody(){
 		return messageBody;
 	}
-		
-	
+
 }

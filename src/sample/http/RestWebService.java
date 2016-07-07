@@ -28,10 +28,10 @@ public class RestWebService implements IWebServiceLogic{
 		if(method.equals(HttpMethod.GET)){
 			returnValue = GET(url);
 		}else if(method.equals(HttpMethod.POST)){
-			returnValue = POST(url);
+			returnValue = POST(request);
 		}
 				
-		HttpResponse response = new HttpResponse("HTTP/1.1", 200, "OK");
+		HttpResponse response = new HttpResponse(200, "OK");
 		response.setHeaderProperty("Content-Type", "application/json;charset=utf-8");
 		response.setHeaderProperty("Content-Length", String.valueOf(returnValue.length() + 2));
 		response.setHeaderProperty("Cache-Control", "no-cache");
@@ -40,6 +40,7 @@ public class RestWebService implements IWebServiceLogic{
 		return response;
 	}
 	
+	//User-defined function do like this.
 	private String GET(String url){
 		String val = MockDatabase(url);
 		if(val == null)
@@ -47,23 +48,19 @@ public class RestWebService implements IWebServiceLogic{
 		return val;
 	}
 	
-	private String POST(String url){
+	//User-defined function do like also this.
+	private String POST(HttpRequest req){
 		String returnMsg = "Success to save in server!";
 		try{
 			String name = "";
 			String grade = "";
 			String age = "";
-			try {
-				HttpUrl reqUrl = new HttpUrl(url);
-	
-				name = reqUrl.getPathElement(1);
-				grade = ClassifyGrade(reqUrl.getPathElement(2));
-				age = reqUrl.getPathElement(3);
-				
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			HttpUrl reqUrl = req.getUrl();
+
+			//It depends on api speculations.
+			name = reqUrl.getPathElement(1);
+			grade = ClassifyGrade(reqUrl.getPathElement(2));
+			age = reqUrl.getPathElement(3);
 	
 			JsonObject jobj = new JsonObject();
 			jobj.PutElement("name", name);
@@ -79,7 +76,7 @@ public class RestWebService implements IWebServiceLogic{
 			jobj.PutElement("score", score);
 			
 	
-			memCache.put(url, jobj);
+			memCache.put(req.getUrlPath(), jobj);
 		}catch(Exception e){
 			returnMsg = "Failed to save in server. maybe there is an error.";
 		}

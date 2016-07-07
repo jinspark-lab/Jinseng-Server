@@ -28,11 +28,11 @@ public class EchoWebService implements IWebServiceLogic{
 	
 	private HttpResponse ResponseGET(HttpRequest request){
 		
-		String output = "[Jinseng] Says Hello : " + request.getUrl() + TextUtil.CRLF + "(If you want to see a bird, than call query /image)";
+		String output = "[Jinseng] Says Hello : " + request.getUrlPath() + TextUtil.CRLF + "(If you want to see a bird, than call query /image)";
 		
 		System.out.println(output);
 		
-		HttpResponse respond = new HttpResponse("HTTP/1.1", 200, "OK");
+		HttpResponse respond = new HttpResponse(200, "OK");
 		
 		if(request.getUrlPath().contains("image")){
 			//Send Image when protocol has the string "image"
