@@ -11,6 +11,7 @@ import core.http.HttpServer;
 import core.http.HttpServiceRouter;
 import core.http.HttpUrl;
 import core.tcp.*;
+import operation.ServerStatus;
 import sample.http.EchoWebService;
 import sample.http.RestWebService;
 import sample.http.WebSiteService;
@@ -55,9 +56,8 @@ public class Main {
 	
 	private static void LaunchEchoWebServer(){
 
-		//This comment works same. * -> mapping all url.
 //		HttpServiceRouter route = new HttpServiceRouter();
-//		route.setRoutingMethod("*", new EchoWebService());
+//		route.setRoutingMethod(HttpUrl.ANYURL, new EchoWebService());
 		
 		HttpServer server = new HttpServer(new EchoWebService(), 60000);
 		try {
@@ -87,7 +87,7 @@ public class Main {
 	private static void LaunchWebSite(){
 		
 		HttpServiceRouter route = new HttpServiceRouter();
-		route.setRoutingMethod("*", new WebSiteService());
+		route.setRoutingMethod(HttpUrl.ANYURL, new WebSiteService());
 		HttpServer server = new HttpServer(route, 60000);
 		try {
 			server.RunServer();
@@ -108,7 +108,9 @@ public class Main {
 		
 //		LaunchRestWebServer();
 
-		LaunchWebSite();
+//		LaunchWebSite();
+		
+		System.out.println(ServerStatus.getStatus());
 		
 	}
 	

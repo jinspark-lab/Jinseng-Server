@@ -22,6 +22,12 @@ public class ConnectionManager {
 
 	private Map<String, ConnectionUnit> connectionMap = new HashMap<String, ConnectionUnit>();		//It can only be accessed by select query to this class.
 	
+	//Management information
+	private String serverName = "";				//optional
+	private long numberOfCurrentUsers = 0;
+	private long numberOfTotalUsers = 0;
+	
+	
 	private ConnectionManager(){
 		
 	}
@@ -30,6 +36,22 @@ public class ConnectionManager {
 			instance = new ConnectionManager();
 		}
 		return instance;
+	}
+	
+	public String getServerName(){
+		return this.serverName;
+	}
+	
+	public void setServerName(String serverName){
+		this.serverName = serverName;
+	}
+	
+	public long getNumberOfCurrentUsers(){
+		return numberOfCurrentUsers;
+	}
+	
+	public long getNumberOfTotalUsers(){
+		return numberOfTotalUsers;
 	}
 	
 	private String GenerateConnectionId(){
@@ -41,7 +63,10 @@ public class ConnectionManager {
 		}
 		return conUUID;
 	}
+	
 	private void RegisterConId(String uuid, ConnectionUnit newCon){
+		numberOfCurrentUsers++;
+		numberOfTotalUsers++;
 		connectionMap.put(uuid, newCon);
 	}
 
@@ -59,7 +84,6 @@ public class ConnectionManager {
 		
 		return newOne;
 	}
-	
 	public ConnectionUnit CreateNewUnit(Socket endPoint, IServiceLogic businessLogic, boolean loop){
 		
 		String newConId = GenerateConnectionId();
@@ -121,7 +145,8 @@ public class ConnectionManager {
 	 * @param connectionId
 	 */
 	public void DeleteUnit(String connectionId){
-		
+		if(!connectionMap.containsKey(connectionId))
+			return ;
 		try {
 			//Socket Close.
 			connectionMap.get(connectionId).getSocket().close();
@@ -130,6 +155,7 @@ public class ConnectionManager {
 			e.printStackTrace();
 		}
 		connectionMap.remove(connectionId);
+		numberOfCurrentUsers--;
 	}
 
 }

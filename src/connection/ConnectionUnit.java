@@ -21,6 +21,8 @@ public class ConnectionUnit implements Runnable{
 	private boolean serviceLoop = false;				//Initially handle communication once.
 	private int term = 1000;								//term to handle connection.
 	
+	private ConnectionManager manager = ConnectionManager.GetInstance();
+	
 	public ConnectionUnit(String id, Socket endpoint, IServiceLogic businessLogic){
 		connectionId = id;
 		socket = endpoint;
@@ -74,8 +76,18 @@ public class ConnectionUnit implements Runnable{
 			e.printStackTrace();
 		} catch(InterruptedException e){
 			e.printStackTrace();
+		}finally{
+			endRun();
 		}
 	}
+	
+	/***
+	 * End callback of the thread.
+	 */
+	public void endRun(){
+		manager.DeleteUnit(this.connectionId);
+	}
+	
 	
 }
 

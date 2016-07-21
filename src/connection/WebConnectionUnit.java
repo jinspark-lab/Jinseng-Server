@@ -22,6 +22,8 @@ public class WebConnectionUnit implements Runnable{
 
 	private HttpProtocolParser httpParser;
 
+	private ConnectionManager manager = ConnectionManager.GetInstance();
+	
 	public WebConnectionUnit(String id, Socket endPoint, IWebServiceLogic service){
 		connectionId = id;
 		socket = endPoint;
@@ -40,6 +42,10 @@ public class WebConnectionUnit implements Runnable{
 		
 		httpParser = new HttpProtocolParser();
 		System.out.println(endPoint.getInetAddress() + " has been connected");
+	}
+	
+	public String getConnectionId(){
+		return connectionId;
 	}
 	
 	private void DoRespond(HttpResponse response){
@@ -93,7 +99,16 @@ public class WebConnectionUnit implements Runnable{
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally{
+			endRun();
 		}
+	}
+	
+	/***
+	 * End callback of the thread.
+	 */
+	public void endRun(){
+		manager.DeleteUnit(this.connectionId);
 	}
 	
 }

@@ -13,9 +13,14 @@ public class HttpUrl {
 	private String queryUrl = "";
 	private ArrayList<String> pathParams = new ArrayList<String>();
 	private LinkedHashMap<String, String> queryParams = new LinkedHashMap<String, String>();
-
+	
 	//It should be changed to Charset type to design clearly.
 	private String charset = "UTF-8"; //Charset.defaultCharset();
+
+	
+	//Specialized URL path options.
+	public static String ANYURL = "*";
+
 	
 	
 	//Should separate exception handling ways. > UnsupportedEncodingException in default constructor ("UTF-8") => Only throw errors when original code has defects.
