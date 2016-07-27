@@ -3,8 +3,10 @@ package connection;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 
+import common.TextUtil;
 import core.http.HttpRequest;
 import core.http.HttpResponse;
 import core.http.HttpServiceRouter;
@@ -64,7 +66,12 @@ public class WebConnectionUnit implements Runnable{
 			e.printStackTrace();
 		}
 		
-		System.out.println("End Logic");
+		try {
+			System.out.println("Response done : " + TextUtil.CRLF + response.getResponseString());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void run(){

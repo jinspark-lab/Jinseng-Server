@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,6 +15,12 @@ import common.TextUtil;
 import connection.ConnectionManager;
 
 public class ServerStatus {
+	/***
+	 * 
+	 * Class to report server system status
+	 * 
+	 * 
+	 */
 	
 	private static ServerStatus stat = new ServerStatus();
 
@@ -28,6 +36,8 @@ public class ServerStatus {
 	private static long serverRemainMemory = 0;
 	private static double serverMemoryUsage = 0.0;
 	private static long serverRunningTime = 0;
+
+	private static Map<String, Long> serverThreadCpuTime = new LinkedHashMap<String, Long>();
 	
 	private static String vendorName = "";
 	private static double numberOfCache = 0;
@@ -54,6 +64,9 @@ public class ServerStatus {
 		
 	}
 	
+	/***
+	 * Get Java Runtime information.
+	 */
 	private static void getRuntimeInfo(){
 		
 		RuntimeMXBean rbean = ManagementFactory.getRuntimeMXBean();
@@ -65,6 +78,9 @@ public class ServerStatus {
 
 	}
 	
+	/***
+	 * Get OS information.
+	 */
 	private static void getOSInfo(){
 		
 		OperatingSystemMXBean osbean = ManagementFactory.getOperatingSystemMXBean();
@@ -76,9 +92,11 @@ public class ServerStatus {
 
 	}
 	
+	/***
+	 * Get Memory information.
+	 */
 	private static void getMemoryInfo(){
 
-//		MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
 		Runtime rntime = Runtime.getRuntime();
 		serverTotalMemory = rntime.totalMemory();
 		serverFreeMemory = rntime.freeMemory();
@@ -87,33 +105,63 @@ public class ServerStatus {
 		serverMemoryUsage = ((double)serverUsedMemory * 100 / (double)serverTotalMemory);
 	}
 	
+	/***
+	 * Get Server object information.
+	 */
 	private static void getServerManagementInfo(){
 		serverName = manager.getServerName();
 		numberOfCurrentUsers = manager.getNumberOfCurrentUsers();
 		numberOfTotalUsers = manager.getNumberOfTotalUsers();
 	}
 	
+	/***
+	 * Get Disk information.
+	 */
 	private static void getDiskInfo(){
 		File[] drives = File.listRoots();
+		
+		systemDiskUsage.clear();
+		systemInfo.clear();
+		
 		if(drives != null && drives.length > 0){
 			for(File disk : drives){
 				long totalSpace = disk.getTotalSpace();
 				long usedSpace = totalSpace - disk.getFreeSpace();
 				double usage = (double)usedSpace * 100 / (double)totalSpace;
-				systemDiskUsage.put(disk.getName(), usage);
+				systemDiskUsage.put(disk.toString(), usage);
 				
 				FileSystemView fsv = FileSystemView.getFileSystemView();
-				systemInfo.put(disk.getName(), fsv.getSystemTypeDescription(disk));
+				systemInfo.put(disk.toString(), fsv.getSystemTypeDescription(disk));
 			}
 		}
 	}
 	
+	/***
+	 * Get Thread information.
+	 */
+	private static void getThreadInfo(){
+		ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+		ThreadInfo[] threadList = threadBean.getThreadInfo(threadBean.getAllThreadIds());
+
+		serverThreadCpuTime.clear();
+		
+		for(ThreadInfo threadInfo : threadList){
+			long cpuTime = threadBean.getThreadCpuTime(threadInfo.getThreadId());
+			serverThreadCpuTime.put(threadInfo.getThreadName(), cpuTime);
+		}
+	}
+	
+	/***
+	 * Get server system's status.
+	 * @return
+	 */
 	public static ServerStatus getStatus(){
 		getRuntimeInfo();
 		getOSInfo();
 		getMemoryInfo();
 		getServerManagementInfo();
 		getDiskInfo();
+		getThreadInfo();
 		return stat;
 	}
 
@@ -125,6 +173,9 @@ public class ServerStatus {
 		context += TextUtil.CRLF + "System Information" + TextUtil.CRLF;
 		for(String key : systemInfo.keySet()){
 			context += "Name:" + key + "\tDesc:" + systemInfo.get(key) + "\tUsage:" + systemDiskUsage.get(key) + TextUtil.CRLF;
+		}
+		for(String key : serverThreadCpuTime.keySet()){
+			context += "Thread Name:" + key + "\tThread Cpu Time:" + serverThreadCpuTime.get(key) + TextUtil.CRLF;
 		}
 		context += "JVM Name:" + jvmName + TextUtil.CRLF + "JVM Version:" + jvmVersion + TextUtil.CRLF + "jvmVendor:" + jvmVendor + TextUtil.CRLF + "jvmSpec:" + specName;
 		context += TextUtil.CRLF;

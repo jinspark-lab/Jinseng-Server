@@ -15,7 +15,7 @@ public class HttpServer {
 
 	
 	private ServerSocket server;
-	private final int port = 8080;
+	private int port = 8080;
 	private ExecutorService threadPool;
 	private int threadMax = 12;
 	private int timeout = 60000;
@@ -71,6 +71,14 @@ public class HttpServer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public int getPort(){
+		return this.port;
+	}
+
+	public void setPort(int port){
+		this.port = port;
 	}
 	
 	private void InitConfiguration(HttpServiceRouter route){

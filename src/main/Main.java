@@ -110,7 +110,7 @@ public class Main {
 
 //		LaunchWebSite();
 		
-		System.out.println(ServerStatus.getStatus());
+//		System.out.println(ServerStatus.getStatus());
 		
 	}
 	
