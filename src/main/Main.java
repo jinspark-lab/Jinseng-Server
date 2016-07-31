@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import common.LogReporter;
+import common.TextUtil;
 import core.http.HttpMethod;
 import core.http.HttpRequest;
 import core.http.HttpServer;

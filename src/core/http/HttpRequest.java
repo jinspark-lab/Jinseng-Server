@@ -3,19 +3,29 @@ package core.http;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import common.TextUtil;
+import common.Validator;
 
 public class HttpRequest {
 	
@@ -130,6 +140,7 @@ public class HttpRequest {
 		}
 		request += TextUtil.CRLF;
 		request += messageBody;
+		request += " " + TextUtil.CRLF;
 		return request;
 	}
 	
@@ -141,37 +152,69 @@ public class HttpRequest {
 		return AssembleProtocol();
 	}
 	
-	
 	/***
-	 * Send response via input url and port.
+	 * It describes simplest way to handshake in HTTP protocol. Just request and receive once.
+	 * @param endpoint
 	 * @return
 	 */
-	public String send(){
-		
-		try {
-			Socket endpoint = new Socket(url.toString(), port);
+	private byte[] handshakeIO(Socket endpoint){
 
+		try{
+			//Send Request from buffer to host.
 			BufferedOutputStream requestOut = new BufferedOutputStream(endpoint.getOutputStream());
 			BufferedInputStream responseIn = new BufferedInputStream(endpoint.getInputStream());
-
-			byte[] reqBuff = getRequestString().getBytes();
+	
+			requestOut.write(getRequestString().getBytes());
+			requestOut.flush();
+	
+			//Receive Response from host.
 
 			byte[] buffer = new byte[8192];
 			int byteRead = 0;
-			
-			String response = "";
-			
-			requestOut.write(reqBuff);
-			requestOut.flush();
+			ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
 			
 			while((byteRead = responseIn.read(buffer)) != -1){
 				byte[] uploadBuffer = TextUtil.ByteTrim(buffer);						//Trim null byte from byte array.
-				response += new String(uploadBuffer, "UTF-8");
+				byteArray.write(uploadBuffer, 0, uploadBuffer.length);
 			}
-			responseIn.close();
-			requestOut.close();
 
+			byte[] response = byteArray.toByteArray();
+			
+			responseIn.close();
+			requestOut.flush();
+			requestOut.close();
+	
 			endpoint.close();
+			
+			return response;
+		}catch(UnknownHostException e){
+			e.printStackTrace();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	/***
+	 * Send request via input url and port.
+	 * @return
+	 */
+	public byte[] send(){
+
+		try {
+			String hostAddr = url.toString();
+
+			//If it is the format of hostname then convert it to IPv4 Address.
+			if(!Validator.isIPAddress(hostAddr)){
+				InetAddress iAddr= InetAddress.getByName(hostAddr);
+				hostAddr = iAddr.getHostAddress();
+			}
+			//else use it as an IP Address.
+
+			Socket endpoint = new Socket(hostAddr, port);
+			
+			byte[] response = handshakeIO(endpoint);
 			
 			return response;
 			
@@ -180,6 +223,38 @@ public class HttpRequest {
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/***
+	 * Send request via input url and port through proxy.
+	 * @param proxy
+	 * @return
+	 */
+	public byte[] send(Proxy proxy){
+
+		try {
+			String hostAddr = url.toString();
+	
+			//If it is the format of hostname then convert it to IPv4 Address.
+			if(!Validator.isIPAddress(hostAddr)){
+				InetAddress iAddr= InetAddress.getByName(hostAddr);
+				hostAddr = iAddr.getHostAddress();
+			}
+			//else use it as an IP Address.
+			
+			Socket endpoint = new Socket(proxy);
+		
+			endpoint.connect(new InetSocketAddress(hostAddr, port));
+			
+			byte[] response = handshakeIO(endpoint);
+			
+			return response;
+		}catch(UnknownHostException e){
+			e.printStackTrace();
+		}catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
