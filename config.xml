@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<server>
+		<name>template</name>
+		<type>HTTP</type>
+		<host>127.0.0.1</host>
+		<port>8080</port>
+		<timeout>60000</timeout>
+		<useSSL>true</useSSL>
+		<proxy>
+			<host></host>
+			<port></port>
+		</proxy>
+	</server>
+</config>

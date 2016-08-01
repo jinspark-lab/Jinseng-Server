@@ -203,14 +203,7 @@ public class HttpRequest {
 	public byte[] send(){
 
 		try {
-			String hostAddr = url.toString();
-
-			//If it is the format of hostname then convert it to IPv4 Address.
-			if(!Validator.isIPAddress(hostAddr)){
-				InetAddress iAddr= InetAddress.getByName(hostAddr);
-				hostAddr = iAddr.getHostAddress();
-			}
-			//else use it as an IP Address.
+			String hostAddr = url.getHostAddr();
 
 			Socket endpoint = new Socket(hostAddr, port);
 			
@@ -236,15 +229,8 @@ public class HttpRequest {
 	public byte[] send(Proxy proxy){
 
 		try {
-			String hostAddr = url.toString();
+			String hostAddr = url.getHostAddr();
 	
-			//If it is the format of hostname then convert it to IPv4 Address.
-			if(!Validator.isIPAddress(hostAddr)){
-				InetAddress iAddr= InetAddress.getByName(hostAddr);
-				hostAddr = iAddr.getHostAddress();
-			}
-			//else use it as an IP Address.
-			
 			Socket endpoint = new Socket(proxy);
 		
 			endpoint.connect(new InetSocketAddress(hostAddr, port));

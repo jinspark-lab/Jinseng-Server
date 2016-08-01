@@ -12,6 +12,7 @@ import core.http.HttpServer;
 import core.http.HttpServiceRouter;
 import core.http.HttpUrl;
 import core.tcp.*;
+import operation.ConfigManager;
 import operation.ServerStatus;
 import sample.http.EchoWebService;
 import sample.http.RestWebService;
@@ -113,6 +114,17 @@ public class Main {
 		
 //		System.out.println(ServerStatus.getStatus());
 		
+//		HttpRequest req = new HttpRequest(HttpMethod.GET, "www.google.com", 80);
+//		try {
+//			System.out.println(new String(req.send(), "UTF-8"));
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		ConfigManager man = new ConfigManager();
+		man.loadFromFile("config.xml");
+		man.printProperties();
 	}
 	
 }

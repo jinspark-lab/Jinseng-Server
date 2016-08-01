@@ -1,16 +1,23 @@
 package core.http;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
+import common.Validator;
 
 public class HttpUrl {
 
 	private String route = "";
 	private String pathUrl = "";
 	private String queryUrl = "";
+	private String hostName = "";
+	private String hostAddr = "";
+	
 	private ArrayList<String> pathParams = new ArrayList<String>();
 	private LinkedHashMap<String, String> queryParams = new LinkedHashMap<String, String>();
 	
@@ -32,6 +39,7 @@ public class HttpUrl {
 		if(parts.length > 0){
 			String decodePath = this.urlDecode(parts[0], charset);
 			pathUrl = decodePath;
+			parseHost(this.route);
 			buildPathes(decodePath);
 			if(parts.length > 1){
 				String decodeQuery = this.urlDecode(parts[1], charset);
@@ -49,6 +57,7 @@ public class HttpUrl {
 		if(parts.length > 0){
 			String decodePath = this.urlDecode(parts[0], charset);
 			pathUrl = decodePath;
+			parseHost(this.route);
 			buildPathes(decodePath);
 			if(parts.length > 1){
 				String decodeQuery = this.urlDecode(parts[1], charset);
@@ -78,6 +87,14 @@ public class HttpUrl {
 		return encodedUrl;
 	}
 	
+	public String getHostName(){
+		return hostName;
+	}
+	
+	public String getHostAddr(){
+		return hostAddr;
+	}
+	
 	public String getPathString(){
 		return pathUrl;
 	}
@@ -92,6 +109,35 @@ public class HttpUrl {
 	
 	public String getQueryElement(String key){
 		return queryParams.get(key);
+	}
+	
+	private void parseHost(String url){
+		
+		String addr = url;
+		if(addr.contains("http://")){
+			addr = addr.replace("http://", "");
+		}
+		
+		String[] part = addr.split("/");
+		
+		String host = part[0];
+		if(host.contains(":")){
+			host = part[0].split(":")[0];
+		}
+		try {
+			if(Validator.isIPAddress(host)){
+				hostAddr = host;
+				hostName = InetAddress.getByName(host).getHostName();
+			}			
+			if(!Validator.isIPAddress(host)){
+				hostAddr = InetAddress.getByName(host).getHostName();
+				hostName = host;
+			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			hostName = "";
+		}
 	}
 	
 	/***
