@@ -1,6 +1,7 @@
 package operation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,10 +16,12 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import common.IOUtil;
+import operation.ConfigInfo.ServeInfo;
 
 public class ConfigManager {
 
-	private Map<String, String> configProperties = new LinkedHashMap<String, String>();
+	private Map<String, ConfigInfo> configMap = new LinkedHashMap<String, ConfigInfo>();
+	private Map<String, Map<String, String>> configProperties = new LinkedHashMap<String, Map<String, String>>();
 	
 	private boolean filterTextTag(Node n){
 		if(n instanceof Text){
@@ -27,6 +30,82 @@ public class ConfigManager {
 				return false;
 		}
 		return true;
+	}
+	
+	private void mapConfigInfo(String id, String key, String value){
+	
+		ConfigInfo info = null;
+		if(configMap.containsKey(id)){
+			info = configMap.get(id);
+		}else{
+			info = new ConfigInfo();
+		}
+
+		if(key.equals("server_name")){
+			info.setServerName(value);
+		}else if(key.equals("server_type")){
+			info.setServerType(value);
+		}else if(key.equals("server_host")){
+			info.setServerHost(value);
+		}else if(key.equals("server_port")){
+			info.setServerPort(Integer.parseInt(value));
+		}else if(key.equals("server_timeout")){
+			info.setTimeout(Integer.parseInt(value));
+		}else if(key.equals("server_useSSL")){
+			info.setUseSSL(value);
+		}else if(key.contains("server_services_service")){
+			
+			String editKey = key.replace("server_services_service_", "");
+			
+			String[] keyParts = editKey.split("_");
+			String tag = keyParts[0];
+			String element = keyParts[1];
+			
+			ServeInfo inf = null;
+			if(info.containServeElement(tag)){
+				inf = info.getServeElement(tag);
+			}else{
+				inf = info.newServeInfo();
+			}
+			if(element.equals("url")){
+				inf.setUrl(value);
+			}else if(element.equals("path")){
+				inf.setPathName(value);
+			}else if(element.equals("class")){
+				inf.setClassName(value);
+			}
+			info.putServeElement(tag, inf);
+		}
+		configMap.put(id, info);
+	}
+	
+	private void parseElement(String id, Node n, String prefix){
+//		System.out.println(n.getNodeName());
+		if(!filterTextTag(n))
+			return;
+		
+		if(n.hasChildNodes()){
+			//Get List's hierarchical information.
+			NodeList children = n.getChildNodes();
+			
+			for(int k=0; k<children.getLength(); k++){
+				
+				if(!filterTextTag(children.item(k)))
+					continue;
+
+				String attr = "";
+				if(n.hasAttributes() && n.getAttributes().getNamedItem("tag") != null){
+					attr = n.getAttributes().getNamedItem("tag").getNodeValue() + "_";
+				}
+				parseElement(id, children.item(k), prefix + n.getNodeName() + "_" + attr);
+			}
+			
+		}else{
+			//Get Element information.
+			String elementKey = (prefix + n.getNodeName()).replace("_#text",  "");
+			mapConfigInfo(id, elementKey, n.getTextContent());
+			configProperties.get(id).put(elementKey, n.getTextContent());
+		}
 	}
 	
 	public void loadFromFile(String filePath){
@@ -45,41 +124,18 @@ public class ConfigManager {
 				
 				Node n = serverConfigs.item(i);
 				
+				if(!filterTextTag(n))
+					continue;
+				
 				//Configuration Name
-				String serverConfigId = n.getNodeName();
 				
 				if(n.getNodeType() == Node.ELEMENT_NODE){
 					
-					NodeList nList = n.getChildNodes();
+					String serverId = n.getAttributes().getNamedItem("id").getNodeValue();
+
+					configProperties.put(serverId, new LinkedHashMap<String, String>());
 					
-					for(int j=0; j<nList.getLength(); j++){
-						
-						//Remove useless "#Test" tag.
-						if(!filterTextTag(nList.item(j)))
-							continue;
-
-						//get proxy heirarchical informtaion.
-						if(nList.item(j).getNodeName().equals("proxy")){
-							NodeList proxyChildren = nList.item(j).getChildNodes();
-
-							for(int k=0; k<proxyChildren.getLength(); k++){
-								
-								if(!filterTextTag(proxyChildren.item(k)))
-									continue;
-								
-								//make camel case.
-								String name = proxyChildren.item(k).getNodeName();
-								String tmp = name.toUpperCase();
-								name = tmp.substring(0, 1) + name.substring(1, name.length());
-								
-								configProperties.put("proxy" + name, proxyChildren.item(k).getTextContent());
-							}
-
-						}else{
-							configProperties.put(nList.item(j).getNodeName(), nList.item(j).getTextContent());
-						}
-						
-					}
+					parseElement(serverId, n, "");
 				}
 			}
 			
@@ -96,8 +152,29 @@ public class ConfigManager {
 	}
 	
 	public void printProperties(){
-		for(String key : configProperties.keySet()){
-			System.out.println(key + ":" + configProperties.get(key));
+		for(String id : configProperties.keySet()){
+			for(String key : configProperties.get(id).keySet()){
+				System.out.println(key + ":" + configProperties.get(id).get(key));
+			}
+		}
+	}
+	
+	public void prints(){
+
+		for(String key : configMap.keySet()){
+			ConfigInfo info = configMap.get(key);
+			System.out.println("Server Name : " + info.getServerName());
+			System.out.println("Server Host : " + info.getServerHost());
+			System.out.println("Server Port : " + info.getServerPort());
+			System.out.println("Server Type : " + info.getServerType());
+			System.out.println("Server Timeout : " + info.getTimeout());
+			System.out.println("Server UseSSL : " + info.getUseSSL());
+			System.out.println("Server ProxyHost : " + info.getProxyHost());
+			System.out.println("Server ProxyPort : " + info.getProxyPort());
+			Map<String, ServeInfo> maps = info.getServeList();
+			for(String elem : maps.keySet()){
+				System.out.println("Service - " + elem + " : " + maps.get(elem).getUrl() + ", " + maps.get(elem).getPathName() + ", " + maps.get(elem).getClassName());
+			}
 		}
 	}
 	
