@@ -1,6 +1,7 @@
 package main;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -14,6 +15,7 @@ import core.http.HttpUrl;
 import core.tcp.*;
 import operation.ConfigManager;
 import operation.ServerStatus;
+import operation.ServiceLauncher;
 import sample.http.EchoWebService;
 import sample.http.RestWebService;
 import sample.http.WebSiteService;
@@ -113,20 +115,14 @@ public class Main {
 //		LaunchWebSite();
 		
 //		System.out.println(ServerStatus.getStatus());
-		
-//		HttpRequest req = new HttpRequest(HttpMethod.GET, "http://www.google.com", 80);
-//		try {
-//			System.out.println(new String(req.send(), "UTF-8"));
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
+
 		ConfigManager man = new ConfigManager();
-		man.loadFromFile("config.xml");
-//		man.printProperties();
+		man.loadFromFile("echo-server.xml");
 		
-		man.prints();
+		ServiceLauncher launcher = new ServiceLauncher();
+		launcher.loadService(man.getConfigInfo("echo"));
+		launcher.runService();
+		
 	}
 	
 }

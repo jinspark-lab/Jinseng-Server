@@ -151,6 +151,10 @@ public class ConfigManager {
 		}
 	}
 	
+	public ConfigInfo getConfigInfo(String serverId){
+		return configMap.get(serverId);
+	}
+	
 	public void printProperties(){
 		for(String id : configProperties.keySet()){
 			for(String key : configProperties.get(id).keySet()){

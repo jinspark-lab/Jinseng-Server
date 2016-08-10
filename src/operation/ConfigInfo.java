@@ -6,15 +6,15 @@ import java.util.Map;
 
 public class ConfigInfo {
 
-	private String serverName;
-	private String serverType;
-	private String serverHost;
-	private int serverPort;
+	private String serverName = "";
+	private String serverType = "";
+	private String serverHost = "";
+	private int serverPort = 0;
 	
-	private int timeout;
-	private String useSSL;
-	private String proxyHost;
-	private int proxyPort;
+	private int timeout = 0;
+	private String useSSL = "";
+	private String proxyHost = "";
+	private int proxyPort = 0;
 		
 	private Map<String, ServeInfo> serves = new LinkedHashMap<String, ServeInfo>();
 	

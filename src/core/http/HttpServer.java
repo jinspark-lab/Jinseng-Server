@@ -9,9 +9,10 @@ import java.util.concurrent.Executors;
 import connection.ConnectionManager;
 import connection.ConnectionUnit;
 import connection.WebConnectionUnit;
+import core.IJinsengServer;
 import core.tcp.IServiceLogic;
 
-public class HttpServer {
+public class HttpServer implements IJinsengServer{
 
 	
 	private ServerSocket server;

@@ -120,23 +120,25 @@ public class HttpUrl {
 		
 		String[] part = addr.split("/");
 		
-		String host = part[0];
-		if(host.contains(":")){
-			host = part[0].split(":")[0];
-		}
-		try {
-			if(Validator.isIPAddress(host)){
-				hostAddr = host;
-				hostName = InetAddress.getByName(host).getHostName();
-			}			
-			if(!Validator.isIPAddress(host)){
-				hostAddr = InetAddress.getByName(host).getHostName();
-				hostName = host;
+		if(part.length > 0){
+			String host = part[0];
+			if(host.contains(":")){
+				host = part[0].split(":")[0];
 			}
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			hostName = "";
+			try {
+				if(Validator.isIPAddress(host)){
+					hostAddr = host;
+					hostName = InetAddress.getByName(host).getHostName();
+				}			
+				if(!Validator.isIPAddress(host)){
+					hostAddr = InetAddress.getByName(host).getHostName();
+					hostName = host;
+				}
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				hostName = "";
+			}
 		}
 	}
 	

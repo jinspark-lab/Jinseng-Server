@@ -1,5 +1,15 @@
 package core.udp;
 
-public class UdpServer {
+import java.io.IOException;
 
+import core.IJinsengServer;
+
+public class UdpServer implements IJinsengServer{
+
+	public void RunServer() throws IOException{
+		
+	}
+	public void EndServer(){
+		
+	}
 }

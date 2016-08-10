@@ -8,8 +8,9 @@ import java.util.concurrent.Executors;
 
 import connection.ConnectionManager;
 import connection.ConnectionUnit;
+import core.IJinsengServer;
 
-public class TcpServer {
+public class TcpServer implements IJinsengServer{
 	
 	private ServerSocket server;
 	private int port = 12345;
