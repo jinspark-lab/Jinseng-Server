@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<server id="1">
+		<name>template</name>
+		<type>HTTP</type>
+		<host>127.0.0.1</host>
+		<port>8080</port>
+		<timeout>60000</timeout>
+		<useSSL>true</useSSL>
+		<services>
+			<service tag="1">
+				<url>home/main</url>
+				<path></path>
+				<class></class>
+			</service>
+			<service tag="2">
+				<url>home/system</url>
+				<path></path>
+				<class></class>
+			</service>
+		</services>
+		<proxy>
+			<host></host>
+			<port></port>
+		</proxy>
+	</server>
+	<server id="2">
+		<name>sample</name>
+		<type>TCP</type>
+		<host>127.0.0.1</host>
+		<port>12345</port>
+		<services>
+			<service tag = "chat">
+				<path></path>
+				<class></class>
+			</service>
+		</services>
+		<proxy>
+			<host></host>
+			<port></port>
+		</proxy>
+	</server>
+</config>
