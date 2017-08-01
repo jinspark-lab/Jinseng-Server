@@ -24,7 +24,7 @@ public class LaunchManager {
 	private int serverPort = 8080;
 	private int timeout = 60000;
 	private boolean usessl = false;
-	private String proxyAddress = "168.219.61.252";
+	private String proxyAddress = "";
 	private int proxyPort = 8080;
 	private String serviceClass = "EchoWebService.java";
 
