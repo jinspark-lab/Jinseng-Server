@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import core.http.HttpServiceRouter;
 import core.http.IWebServiceLogic;
-import core.tcp.IServiceLogic;
+import core.tcp.ITcpServiceLogic;
 
 public class ConnectionManager {
 	/***
@@ -76,7 +76,7 @@ public class ConnectionManager {
 	 * @param businessLogic
 	 * @return
 	 */
-	public ConnectionUnit CreateNewUnit(Socket endPoint, IServiceLogic businessLogic){
+	public ConnectionUnit CreateNewUnit(Socket endPoint, ITcpServiceLogic businessLogic){
 		
 		String newConId = GenerateConnectionId();
 		ConnectionUnit newOne = new ConnectionUnit(newConId, endPoint, businessLogic);
@@ -84,7 +84,7 @@ public class ConnectionManager {
 		
 		return newOne;
 	}
-	public ConnectionUnit CreateNewUnit(Socket endPoint, IServiceLogic businessLogic, boolean loop){
+	public ConnectionUnit CreateNewUnit(Socket endPoint, ITcpServiceLogic businessLogic, boolean loop){
 		
 		String newConId = GenerateConnectionId();
 		ConnectionUnit newOne = new ConnectionUnit(newConId, endPoint, businessLogic, loop);
@@ -92,7 +92,7 @@ public class ConnectionManager {
 		
 		return newOne;
 	}
-	public ConnectionUnit CreateNewUnit(Socket endPoint, IServiceLogic businessLogic, boolean loop, int term){
+	public ConnectionUnit CreateNewUnit(Socket endPoint, ITcpServiceLogic businessLogic, boolean loop, int term){
 		
 		String newConId = GenerateConnectionId();
 		ConnectionUnit newOne = new ConnectionUnit(newConId, endPoint, businessLogic, loop, term);

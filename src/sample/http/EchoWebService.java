@@ -52,6 +52,28 @@ public class EchoWebService implements IWebServiceLogic{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else if(request.getUrlPath().contains("video")){
+			File f = new File("wildlife.wmv");				//It should be something! or it makes an error.
+			try {
+				FileInputStream is = new FileInputStream(f);
+				byte[] obj = new byte[(int)f.length()];
+				is.read(obj);
+				respond.setHeaderProperty("Content-Type", "application/octet-stream");
+				respond.setHeaderProperty("Content-Length", Long.toString(f.length()));
+				respond.setHeaderProperty("Cache-Control", "no-cache");
+				respond.setHeaderProperty("Accept-Ranges", "bytes");
+				respond.setHeaderProperty("Accept-Encoding", "chunked");
+				respond.setHeaderProperty("Connection", "keep-alive");
+				respond.setHeaderProperty("Content-Transfer-Encoding", "binary");
+				respond.setMessageBody(obj);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}else{
 			//Send url path echo system.
 			respond.setHeaderProperty("Content-Type", "text/html;charset=utf-8");
@@ -62,5 +84,4 @@ public class EchoWebService implements IWebServiceLogic{
 		
 		return respond;
 	}
-
 }

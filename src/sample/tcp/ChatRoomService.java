@@ -11,7 +11,7 @@ import connection.ConnectionManager;
 import connection.ConnectionUnit;
 import core.tcp.*;
 
-public class ChatRoomService implements IServiceLogic{
+public class ChatRoomService implements ITcpServiceLogic{
 
 	private String endId;
 	private Socket endPoint;

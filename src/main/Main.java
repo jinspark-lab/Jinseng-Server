@@ -13,6 +13,7 @@ import core.http.HttpServer;
 import core.http.HttpServiceRouter;
 import core.http.HttpUrl;
 import core.tcp.*;
+import core.udp.UdpServer;
 import operation.ConfigManager;
 import operation.ServerStatus;
 import operation.ServiceLauncher;
@@ -22,6 +23,8 @@ import sample.http.WebSiteService;
 import sample.tcp.ChatRoomService;
 import sample.tcp.FileTransferService;
 import sample.tcp.PrintService;
+import sample.udp.EchoService;
+
 
 public class Main {
 
@@ -102,27 +105,52 @@ public class Main {
 		server.EndServer();
 	}
 	
+	private static void LaunchUdpEchoServer(){
+		UdpServer server = new UdpServer(new EchoService());
+		try {
+			server.RunServer();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		server.EndServer();
+	}
+	
 	public static void main(String[] args){
 		
 		System.out.println("Hello World");
 		
+		/*** The way to start TCP Chatting server*/
 //		LaunchChatRoomServer();
 		
+		/*** The way to run Echo web server*/
 //		LaunchEchoWebServer();
 		
+		/*** The way to run Http Rest server*/
 //		LaunchRestWebServer();
 
+		/*** The way to check remote server status */
+
 //		LaunchWebSite();
+
+		/*** The way to check remote server status */
 		
 //		System.out.println(ServerStatus.getStatus());
 
-		ConfigManager man = new ConfigManager();
-		man.loadFromFile("echo-server.xml");
+
+		/*** The way to run server using configurations */
 		
-		ServiceLauncher launcher = new ServiceLauncher();
-		launcher.loadService(man.getConfigInfo("echo"));
-		launcher.runService();
+//		ConfigManager man = new ConfigManager();
+//		man.loadFromFile("echo-server.xml");
+//		
+//		ServiceLauncher launcher = new ServiceLauncher();
+//		launcher.loadService(man.getConfigInfo("echo"));
+//		launcher.runService();
+
+		/*** The way to use Udp Echo server */
 		
+		LaunchUdpEchoServer();
+
 	}
 	
 }

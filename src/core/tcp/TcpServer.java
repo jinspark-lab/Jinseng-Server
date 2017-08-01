@@ -14,33 +14,33 @@ public class TcpServer implements IJinsengServer{
 	
 	private ServerSocket server;
 	private int port = 12345;
-	ExecutorService threadPool;
+	private ExecutorService threadPool;
 	private int threadMax = 12;
 	private int timeout = 60000;
-	private IServiceLogic serviceLogic;				//Service Logic of your application.
+	private ITcpServiceLogic serviceLogic;				//Service Logic of your application.
 	private boolean serviceLoop = true;
 	
 	private ConnectionManager manager = ConnectionManager.GetInstance();
 
-	public TcpServer(IServiceLogic service){
+	public TcpServer(ITcpServiceLogic service){
 		InitConfiguration(service);
 	}
-	public TcpServer(IServiceLogic service, int port){
+	public TcpServer(ITcpServiceLogic service, int port){
 		this.port = port;
 		InitConfiguration(service);
 	}
-	public TcpServer(IServiceLogic service, int port, int threadMax){
+	public TcpServer(ITcpServiceLogic service, int port, int threadMax){
 		this.port = port;
 		this.threadMax = threadMax;
 		InitConfiguration(service);
 	}
-	public TcpServer(IServiceLogic service, int port, int threadMax, boolean loop){
+	public TcpServer(ITcpServiceLogic service, int port, int threadMax, boolean loop){
 		this.port = port;
 		this.threadMax = threadMax;
 		this.serviceLoop = loop;
 		InitConfiguration(service);
 	}
-	public TcpServer(IServiceLogic service, int port, int threadMax, boolean loop, int serverTimeout){
+	public TcpServer(ITcpServiceLogic service, int port, int threadMax, boolean loop, int serverTimeout){
 		this.port = port;
 		this.threadMax = threadMax;
 		this.serviceLoop = loop;
@@ -49,7 +49,7 @@ public class TcpServer implements IJinsengServer{
 	}
 	
 	
-	private void InitConfiguration(IServiceLogic service){
+	private void InitConfiguration(ITcpServiceLogic service){
 		try {
 			server = new ServerSocket(port);
 			threadPool = Executors.newFixedThreadPool(threadMax);			//Allocate Threadpool by max size.
@@ -72,6 +72,7 @@ public class TcpServer implements IJinsengServer{
 					Socket endpoint = server.accept();
 					
 					//Passing parameters socket end point and service logic.
+					//It passes handshake routine to thread handling manager.
 					ConnectionUnit handler = manager.CreateNewUnit(endpoint, serviceLogic, serviceLoop);
 					
 					//Execute thread pool.

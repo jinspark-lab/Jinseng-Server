@@ -33,7 +33,7 @@ public class ConfigManager {
 	}
 	
 	private void mapConfigInfo(String id, String key, String value){
-	
+
 		ConfigInfo info = null;
 		if(configMap.containsKey(id)){
 			info = configMap.get(id);

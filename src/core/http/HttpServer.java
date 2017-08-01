@@ -10,7 +10,7 @@ import connection.ConnectionManager;
 import connection.ConnectionUnit;
 import connection.WebConnectionUnit;
 import core.IJinsengServer;
-import core.tcp.IServiceLogic;
+import core.tcp.ITcpServiceLogic;
 
 public class HttpServer implements IJinsengServer{
 

@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import core.tcp.*;
 
-public class PrintService implements IServiceLogic{
+public class PrintService implements ITcpServiceLogic{
 
 	public Object ReceiveRequest(String connectionId, Socket socket){
 		try {

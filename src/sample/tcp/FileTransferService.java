@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-public class FileTransferService implements IServiceLogic {
+public class FileTransferService implements ITcpServiceLogic {
 
 	private Socket endSocket = null;
 	
