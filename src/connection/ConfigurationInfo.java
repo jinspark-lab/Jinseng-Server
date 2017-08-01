@@ -10,7 +10,7 @@ public class ConfigurationInfo {
 	private int timeout = 60000;
 	private String usessl = "FALSE";
 	
-	private String proxyAddress = "168.219.61.252";
+	private String proxyAddress = "";
 	private int proxyPort = 8080;
 	
 	private String serviceClass = "EchoWebService.java";
